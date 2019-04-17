@@ -37,8 +37,8 @@ const onSign = (req, res, next) => {
         }
       })
       if (!hasSomeUser) {
-        reqBody.add.userId = baseUserId + dataScore.userList.length
-        dataScore.userList.push(reqBody.add)
+        reqBody.add.userId = String(baseUserId + dataScore.userList.length)
+        dataScore.userList.unshift(reqBody.add)
         fs.writeFile('public/mock/userList.json', JSON.stringify(dataScore))
       }
       if (err) {

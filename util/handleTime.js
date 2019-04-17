@@ -1,7 +1,7 @@
 let onHandleTime = (timeStamp)=>{
   let year = new Date(timeStamp).getFullYear()
   let month = onHandleNum(new Date(timeStamp).getMonth()+1)
-  let day = onHandleNum(new Date(timeStamp.getDate()))
+  let day = onHandleNum(new Date(timeStamp).getDate())
   let hour = onHandleNum(new Date(timeStamp).getHours())
   let minute =  onHandleNum(new Date(timeStamp).getMinutes())
   let second =  onHandleNum(new Date(timeStamp).getSeconds())

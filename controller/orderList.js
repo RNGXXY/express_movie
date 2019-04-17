@@ -9,16 +9,17 @@ var baseOrderId = 100001   // 基础orderId
 const onGetOrderList = (req, res, next) => {
   res.set('content-type', 'application/json; charset=utf8')
   fs.readFile('public/mock/orderList.json', function (err, data) {
+    let dataScore  = JSON.parse(data)
     if (err) {
       res.render('data', {
         code: 500,
         data: '发送了不可预知的错误，请重试'
       });
     } else {
-      if(!data.length) data="[]"
+      if(!dataScore.orderList) data="[]"
       res.render('data', {
         code: 200,
-        data:JSON.stringify(data)
+        data
       });
     }
   })
@@ -49,11 +50,12 @@ const onGetOrderListByUser = (req, res, next) => {
 
 // 新增订单
 const onAddOrder = async (req,res,next )=> {
+  res.set('content-type', 'application/json; charset=utf8')
   fs.readFile('public/mock/orderList.json', function (err, data) {
     let dataScore = JSON.parse(data)
     let reqBody = req.body
     dataScore.orderList.push({
-      orderId:baseOrderId+dataScore.orderList.length,
+      orderId:String(baseOrderId+dataScore.orderList.length),
       userId:reqBody.userId,
       movieId:reqBody.movieId,
       userName:reqBody.userName,
@@ -69,7 +71,7 @@ const onAddOrder = async (req,res,next )=> {
     } else {
       res.render('data', {
         code: 200,
-        data: '登录成功'
+        data: '订单生效'
       });
     }
   })
