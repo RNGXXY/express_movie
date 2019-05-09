@@ -11,6 +11,7 @@ var dataRouter = require('./routes/data');
 var userListRouter = require('./routes/userList');    // 用户列表管理
 var orderListRouter = require('./routes/orderList');  // 订单列表管理
 var seatRouter = require('./routes/seat');            // 座位管理
+var collectionListRouter = require('./routes/collectionList');            // 座位管理
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use('/data', dataRouter);
 app.use('/userList', userListRouter);
 app.use('/orderList', orderListRouter);
 app.use('/seat', seatRouter);
+app.use('/collectionList', collectionListRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

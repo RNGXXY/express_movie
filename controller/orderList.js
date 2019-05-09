@@ -69,7 +69,8 @@ const onAddOrder = async (req,res,next )=> {
       number:reqBody.number,
       state:reqBody.state,
       cinema:reqBody.cinema,
-      orderContent:reqBody.orderContent
+      orderContent:reqBody.orderContent,
+      ...reqBody
     })
     fs.writeFile('public/mock/orderList.json', JSON.stringify(dataScore))
     if (err) {

@@ -41,11 +41,10 @@ const getSeatById = (req, res, next) => {
       if(!dataScore.length){
         data = '[]'
       }else{
-        console.log(req.url)
         let arg = url.parse(req.url).query;
         let params = querystring.parse(arg);
         dataScore.some(item=>{
-          if(item.movieId == params.movieId){
+          if(item.movieId == params.movieId && item.sceneId == params.sceneId){
             data = JSON.stringify(item.movieSeat)
             return true
           }else{
@@ -64,7 +63,6 @@ const getSeatById = (req, res, next) => {
 
 // 新增座位表
 const setSeatList = (req, res, next) => {
-  res.set('content-type', 'application/json; charset=utf8')
 
   res.set('content-type', 'application/json; charset=utf8')
   fs.readFile('public/mock/seat.json', function (err, data) {
@@ -80,16 +78,18 @@ const setSeatList = (req, res, next) => {
       let movieId = reqBody.movieId
       let seatList = reqBody.seatList
       let movieName = reqBody.movieName
+      let sceneId = reqBody.sceneId
       if(!dataScore.length){
         dataScore.unshift({
           movieId,
           movieName,
+          sceneId,
           movieSeat:seatList,
         })
       }else{
         let hasSome = false
         dataScore.some((item,index)=>{ 
-          if(item.movieId == reqBody.movieId){
+          if(item.movieId == reqBody.movieId && item.sceneId == reqBody.sceneId){
            let newMovieSeat = [...reqBody.seatList,...item.movieSeat]
            dataScore[index].movieSeat = newMovieSeat
            hasSome = true
@@ -100,11 +100,12 @@ const setSeatList = (req, res, next) => {
           dataScore.unshift({
              movieId,
              movieName,
+             sceneId,
              movieSeat:seatList,
            })
          }
-        fs.writeFile('public/mock/seat.json', JSON.stringify(dataScore))
       }
+      fs.writeFile('public/mock/seat.json', JSON.stringify(dataScore))
       res.render('data', {
         code: 200,
         msg :JSON.stringify({msg:'添加座位成功'}),
@@ -114,8 +115,33 @@ const setSeatList = (req, res, next) => {
   })
 }
 
+// 释放座位
+const releaseSeat = (req,res,next)=>{
+  res.set('content-type', 'application/json; charset=utf8')
+  fs.readFile('public/mock/seat.json', function (err, data) {
+    if (err) {
+      res.render('data', {
+        code: 500,
+        msg : JSON.stringify({msg:'发送了不可预知的错误，请重试'}),
+        data: JSON.stringify({msg:'发送了不可预知的错误，请重试'}),
+      });
+    } else {
+      let dataScore = JSON.parse(data)     // 数据库中的数据 
+      let reqBody = req.body   // 请求中body的参数
+      let newDataScore = dataScore.filter(item=>item.movieId !== reqBody.movieId && item.sceneId !== reqBody.sceneId)
+      fs.writeFile('public/mock/seat.json', JSON.stringify(newDataScore))
+      res.render('data', {
+        code: 200,
+        msg :JSON.stringify({msg:'操作成功'}),
+        data:JSON.stringify({msg:'操作成功'})
+      });
+    }
+  })
+}
+
 module.exports = {
   getAllSeat,
   getSeatById,
-  setSeatList
+  setSeatList,
+  releaseSeat
 }
